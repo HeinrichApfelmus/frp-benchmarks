@@ -19,6 +19,7 @@ library
         , containers
         , mwc-random
         , time
+        , deepseq
 
         , netwire         == 4.0.5
         , reactive-banana == 0.7.1.3
@@ -27,6 +28,8 @@ library
         , ordrea          == 0.2.0.0
 
     ghc-options: -fno-state-hack
+    other-modules:
+        Benchmark.Utils
     exposed-modules:
         Benchmark.Netwire
         Benchmark.Banana

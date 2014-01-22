@@ -5,6 +5,7 @@ module Benchmark.Netwire
     , benchmark2
     , test
     ) where
+
 import Control.Monad (forM_, unless)
 import Data.IntMap (IntMap, (!))
 import qualified Data.IntMap as IntMap
@@ -12,9 +13,11 @@ import Data.Monoid (Monoid(..))
 import Prelude hiding ((.), id)
 import System.IO
 
-import Control.Wire hiding (loop, unless)
-import System.Random.MWC (GenIO)
+import           Benchmark.Utils
+import           Control.Wire             hiding (loop, unless)
+import           System.Random.MWC        (GenIO)
 import qualified System.Random.MWC as MWC
+
 
 inputsPerStep :: Int
 inputsPerStep = 10
@@ -69,8 +72,8 @@ step1 gen netsize n wire (Session update) = do
                   index <- MWC.uniformR (0, netsize-1) gen
                   (r, wire') <- stepWire w dt (index, show n)
                   case r of
-                      Left _ -> return ()
-                      Right x -> hPutStrLn stderr x
+                      Left  _ -> return ()
+                      Right x -> doSomething x
                   loop dt (i-1) wire'
 
 ------------------------------------------------------------
@@ -93,10 +96,10 @@ counter = accum (\n _ -> n + 1) 0
 step2 :: Step e IO (Int, ()) Int
 step2 gen netsize _n wire (Session update) = do
     (dt, session') <- update
-    (r, wire') <- loop dt inputsPerStep (Right 0) wire
+    (r, wire')     <- loop dt inputsPerStep (Right 0) wire
     case r of
-        Left _ -> return ()
-        Right x -> hPrint stderr x
+        Left  _ -> return ()
+        Right x -> doSomething $ show x
     return (wire', session')
     where
         loop dt i r w

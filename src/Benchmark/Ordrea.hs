@@ -5,15 +5,16 @@ module Benchmark.Ordrea (
 , main
 ) where
 
-import FRP.Ordrea
-import Control.Monad
-import Control.Applicative
-import Data.Monoid
-import Data.Time
-import System.Random.MWC
-import qualified Data.IntMap as IM
-import Text.Printf
-import System.IO
+import           Benchmark.Utils
+import           Control.Applicative
+import           Control.Monad
+import qualified Data.IntMap         as IM
+import           Data.Monoid
+import           Data.Time
+import           FRP.Ordrea
+import           System.Random.MWC
+import           Text.Printf
+
 
 benchmark1 :: Int -> Int -> IO (NominalDiffTime, NominalDiffTime)
 benchmark1 netsize dur = do
@@ -31,7 +32,7 @@ benchmark1 netsize dur = do
         replicateM_ 10 $ do
             ev <- uniformR (0,netsize-1) randGen
             maybe (return ()) (flip triggerExternalEvent str) $ IM.lookup ev sinkMap
-        mapM_ ePutStrLn =<< sample
+        mapM_ doSomething =<< sample
     endtime <- getCurrentTime
     return (midtime `diffUTCTime` starttime, endtime `diffUTCTime` midtime)
 
@@ -53,7 +54,7 @@ benchmark2 netsize dur = do
         replicateM_ 10 $ do
             ev <- uniformR (0,netsize-1) randGen
             maybe (return ()) (flip triggerExternalEvent ()) $ IM.lookup ev sinkMap
-        ePutStrLn . show =<< sample
+        doSomething . show =<< sample
     endtime <- getCurrentTime
     return (midtime `diffUTCTime` starttime, endtime `diffUTCTime` midtime)
 
@@ -72,5 +73,3 @@ main = do
         sizes   = [100,1000,10000,100000]
     sequence_ $ testN <$> benches <*> sizes <*> durs
 
-ePutStrLn :: String -> IO ()
-ePutStrLn = hPutStrLn stderr

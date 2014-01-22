@@ -11,17 +11,17 @@ module Benchmark.Sodium (
 , main
 ) where
 
-import FRP.Sodium
-import FRP.Sodium.Internal (ioReactive)
-import Control.Monad
-import Control.Applicative
-import Data.Time
-import System.Random.MWC
-import qualified Data.IntMap as IM
-import Text.Printf
-import System.IO
-import System.Mem
-import Data.Maybe
+import           Benchmark.Utils
+import           Control.Applicative
+import           Control.Monad
+import qualified Data.IntMap         as IM
+import           Data.Maybe
+import           Data.Time
+import           FRP.Sodium
+import           FRP.Sodium.Internal       (ioReactive)
+import           System.Mem
+import           System.Random.MWC
+import           Text.Printf
 
 benchmark1 :: Int -> Int -> IO (NominalDiffTime, NominalDiffTime)
 benchmark1 netsize dur = do
@@ -30,10 +30,10 @@ benchmark1 netsize dur = do
   let trigMap = IM.fromList $ zip [0..netsize-1] triggers
   -- 'merge' appears to be very slow for sodium
   -- let merged = foldl1' merge stringEs
-  -- unreg <- sync $ listen merged (ePutStrLn)
+  -- unreg <- sync $ listen merged (doSomething)
   --
   -- This implementation is much faster
-  unreg <- sync $ mapM (`listen` ePutStrLn) stringEs
+  unreg <- sync $ mapM (`listen` doSomething) stringEs
 
   midTime <- getCurrentTime
   randGen <- create
@@ -72,7 +72,7 @@ benchmark2 netsize dur = do
           stepTrigger step
           forM_ randomRs $ \ev -> maybe (error "sodium bench2: trigger not found") ($ ()) $ IM.lookup ev trigMap
           sample selectedB
-      ePutStrLn (show (val :: Int))
+      doSomething (show (val :: Int))
   endTime <- getCurrentTime
   return (midTime `diffUTCTime` startTime, endTime `diffUTCTime` midTime)
 
@@ -116,7 +116,7 @@ benchmark3 netsize dur = do
           replicateM_ (netsize `div` 2) $ do
               r <- ioReactive $ uniformR (0,netsize-1) randGen
               maybe (error "sodium bench2: trigger not found") ($ r) $ IM.lookup r trigMap
-          listen resultIntE (ePutStrLn . show)
+          listen resultIntE (doSomething . show)
       unreg
   -- we want to print anything from the resultIntE stream, but we need to
   -- un-register the listener afterwards to prevent holding on to/printing from
@@ -142,6 +142,3 @@ main = do
         sizes   = [100,1000,10000,100000]
         restrictions = []
     sequence_ $ testN restrictions <$> benches <*> sizes <*> durs
-
-ePutStrLn :: String -> IO ()
-ePutStrLn = hPutStrLn stderr

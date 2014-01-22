@@ -6,16 +6,17 @@ module Benchmark.Euphoria (
 , main
 ) where
 
-import FRP.Euphoria.Event
-import Control.Monad
-import Control.Applicative
-import Data.Monoid
-import Data.Time
-import System.Random.MWC
-import qualified Data.IntMap as IM
-import Text.Printf
-import System.IO
-import System.Mem
+import           Benchmark.Utils
+import           Control.Applicative
+import           Control.Monad
+import qualified Data.IntMap         as IM
+import           Data.Monoid
+import           Data.Time
+import           FRP.Euphoria.Event
+import           System.IO
+import           System.Mem
+import           System.Random.MWC
+import           Text.Printf
 
 benchmark1 :: Int -> Int -> IO (NominalDiffTime, NominalDiffTime)
 benchmark1 netsize dur = do
@@ -33,7 +34,7 @@ benchmark1 netsize dur = do
         replicateM_ 10 $ do
             ev <- uniformR (0,netsize-1) randGen
             maybe (return ()) ($ str) $ IM.lookup ev sinkMap
-        mapM_ ePutStrLn =<< sample
+        mapM_ doSomething =<< sample
     endtime <- getCurrentTime
     return (midtime `diffUTCTime` starttime, endtime `diffUTCTime` midtime)
 
@@ -53,7 +54,7 @@ benchmark2 netsize dur = do
           selectedD_E <- scanAccumE (tail countDs) . (collector <$) $ filterE (\cnt -> cnt `rem` 10 == 0) stepE
           discreteToSignal . join =<< stepperD (head countDs) selectedD_E
 
-  sample <- start network
+  sample  <- start network
   midTime <- getCurrentTime
   randGen <- create
   forM_ [1..dur] $ \step -> do
