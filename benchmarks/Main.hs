@@ -14,28 +14,28 @@ main = defaultMain
     -- Benchmark 1
     [ bgroup "benchmark1/100-nodes-100-steps"
           [ bench "netwire" $ whnfIO $ Netwire.benchmark1 100 100
-          -- , bench "banana" $ whnfIO $ Banana.benchmark1 100 100
+          , bench "banana" $ whnfIO $ Banana.benchmark1 100 100
           , bench "sodium" $ whnfIO $ Sodium.benchmark1 100 100
           , bench "euphoria" $ whnfIO $ Euphoria.benchmark1 100 100
           , bench "ordrea" $ whnfIO $ Ordrea.benchmark1 100 100
           ]
     , bgroup "benchmark1/100-nodes-1000-steps"
           [ bench "netwire" $ whnfIO $ Netwire.benchmark1 100 1000
-          -- , bench "banana" $ whnfIO $ Banana.benchmark1 100 100
+          , bench "banana" $ whnfIO $ Banana.benchmark1 100 100
           , bench "sodium" $ whnfIO $ Sodium.benchmark1 100 1000
           , bench "euphoria" $ whnfIO $ Euphoria.benchmark1 100 1000
           , bench "ordrea" $ whnfIO $ Ordrea.benchmark1 100 1000
           ]
     , bgroup "benchmark1/1000-nodes-100-steps"
           [ bench "netwire" $ whnfIO $ Netwire.benchmark1 1000 100
-          -- , bench "banana" $ whnfIO $ Banana.benchmark1 1000 100
+          , bench "banana" $ whnfIO $ Banana.benchmark1 1000 100
           , bench "sodium" $ whnfIO $ Sodium.benchmark1 1000 100
           , bench "euphoria" $ whnfIO $ Euphoria.benchmark1 1000 100
           , bench "ordrea" $ whnfIO $ Ordrea.benchmark1 1000 100
           ]
     , bgroup "benchmark1/1000-nodes-1000-steps"
           [ bench "netwire" $ whnfIO $ Netwire.benchmark1 1000 1000
-          -- , bench "banana" $ whnfIO $ Banana.benchmark1 1000 1000
+          , bench "banana" $ whnfIO $ Banana.benchmark1 1000 1000
           , bench "sodium" $ whnfIO $ Sodium.benchmark1 1000 1000
           , bench "euphoria" $ whnfIO $ Euphoria.benchmark1 1000 1000
           , bench "ordrea" $ whnfIO $ Ordrea.benchmark1 1000 1000
@@ -65,13 +65,14 @@ main = defaultMain
     -- Benchmark 2
     , bgroup "benchmark2/100-nodes-100-steps"
           [ bench "netwire" $ whnfIO $ Netwire.benchmark2 100 100
-          -- , bench "banana" $ whnfIO $ Banana.benchmark2 100 100
+          , bench "banana" $ whnfIO $ Banana.benchmark2 100 100
           , bench "sodium" $ whnfIO $ Sodium.benchmark2 100 100
           , bench "euphoria" $ whnfIO $ Euphoria.benchmark2 100 100
           , bench "ordrea" $ whnfIO $ Ordrea.benchmark2 100 100
           ]
     , bgroup "benchmark2/100-nodes-1000-steps"
           [ bench "netwire" $ whnfIO $ Netwire.benchmark2 100 1000
+          , bench "banana" $ whnfIO $ Banana.benchmark2 100 1000
           , bench "sodium" $ whnfIO $ Sodium.benchmark2 100 1000
           , bench "euphoria" $ whnfIO $ Euphoria.benchmark2 100 1000
           , bench "ordrea" $ whnfIO $ Ordrea.benchmark2 100 1000
